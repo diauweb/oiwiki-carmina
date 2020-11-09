@@ -3,6 +3,8 @@ import React from 'react'
 import Layout from '../components/layout'
 import SEO from '../components/seo'
 import Grid from '@material-ui/core/Grid'
+import Details from '../components/Details'
+import Summary from '../components/Summary'
 import MonacoEditor from 'react-monaco-editor'
 import MDRenderer from '../lib/MDRenderer'
 
@@ -12,13 +14,22 @@ class Editor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      code: '// type here',
-      codeAst: {},
+      codeAst: { tagName: 'div', children: [{ type: 'text', value: 'Type something left...' }] },
+    }
+    this.monacoRef = React.createRef()
+    
+    this.myComponents = {
+      details: Details,
+      summary: Summary,
+      // a: Link(location),
+      inlineCode: 'code',
+      inlinecode: 'code',
     }
   }
 
-  onChange(/* newValue, e */) {
-    toHAST(this.state.code)
+  onChange() {
+    const code = this.monacoRef.current.editor.getValue()
+    this.setState({ codeAst: toHAST(code) })
   }
 
   render(){
@@ -31,8 +42,8 @@ class Editor extends React.Component {
               width="50vw" 
               height="100vh" 
               language="markdown"
-              value={this.state.code}
               onChange={this.onChange.bind(this)}
+              ref={this.monacoRef}
             />
           </Grid>
           <Grid item>

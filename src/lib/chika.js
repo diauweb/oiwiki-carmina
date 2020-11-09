@@ -1,4 +1,4 @@
-import Remark from 'remark-parse'
+import remark from 'remark-parse'
 import unified from 'unified'
 import reparseRaw from 'rehype-raw'
 import stripPosition from 'unist-util-remove-position'
@@ -72,16 +72,30 @@ const hastHandlers = {
     },
   }
 
-const remarkPipe = new Remark().data(`settings`, remarkOptions)
-const rehypePipe = unified().use(reparseRaw)
+import remarkMath from 'remark-math'
+// import remarkDetails from 'remark-details'
+// import rehypePseudo from './rehype-pseudocodejs'
+import rehypeMathjax from 'rehype-mathjax/chtml'
+
+const remarkPipe = unified()
+  .use(remark)
+  .data(`settings`, remarkOptions)
+  .use(remarkMath)
+  // .use(remarkDetails)
+  // .use(require('@mgtd/remark-shiki'), { semantic: false, theme: 'dark_plus', skipInline: true })
+
+const rehypePipe = unified()
+  .use(reparseRaw)
+  // .use(rehypePseudo)
+  // .use(rehypeMathjax, { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/output/chtml/fonts/woff-v2' })
+
 export default function toHAST(md) {
     let markdownAST = remarkPipe.parse(md)
-    markdownAST = remarkPipe.run(markdownAST)
+    markdownAST = remarkPipe.runSync(markdownAST)
 
-
+    
     return stripPosition(rehypePipe.runSync(tohast(markdownAST, {
         allowDangerousHTML: true,
         handlers: hastHandlers,
     })))
-
 }

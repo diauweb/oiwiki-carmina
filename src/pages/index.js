@@ -23,7 +23,9 @@ const IndexPage = () => {
       </Grid>
       <Divider />
       <br/>
-      <Button variant="contained"><Link to="/tsumugi">Editor</Link></Button>
+      <Grid container justify="center">
+        <Button variant="contained"><Link to="/tsumugi">Editor</Link></Button>
+      </Grid>
     </Layout>
   )
 }

@@ -9,6 +9,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { StaticQuery, graphql } from 'gatsby'
 
+import Grid from '@material-ui/core/Grid'
+
 import Header from './header'
 import './layout.css'
 
@@ -35,8 +37,8 @@ const Layout = ({ children }) => {
               paddingTop: 80,
             }}
           >
-            <main>{children}</main>
-            <footer style={{ paddingTop: 10 }}>
+          <main>{children}</main>
+            <footer style={{ paddingTop: 10, textAlign: 'center' }}>
               © {new Date().getFullYear()}, OI Wiki Team
             </footer>
           </div>
