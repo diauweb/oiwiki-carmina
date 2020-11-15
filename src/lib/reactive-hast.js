@@ -1,4 +1,5 @@
 import React from 'react'
+import nodeToString from 'hast-util-to-string'
 
 // modified on https://github.com/pveyes/htmr
 
@@ -177,6 +178,27 @@ export default function reactiveHast (ast, components, index = 1) {
       __html: childNode.value.trim(),
     }
     return React.createElement(tag, props, null)
+  }
+
+  // math in-browser rendering inject here
+  if (tag === 'span' && ast.properties.className?.includes('math-inline')) {
+    const math = nodeToString(ast)
+    if (math !== undefined && 
+        window !== undefined && 
+        window.MathJax !== undefined) {
+
+        // try use offshore rendering to break no React DOM
+        const domNode = document.createElement('span')
+        domNode.innerText = math
+
+        window.MathJax.typeset([domNode])
+
+        return React.createElement('div', {
+          dangerouslySetInnerHTML: {
+            __html: domNode.outerHTML
+          }
+        })   
+      }
   }
 
   const children = ast.children.map((el, i) => reactiveHast(el, components, i))

@@ -75,7 +75,8 @@ const hastHandlers = {
 import remarkMath from 'remark-math'
 // import remarkDetails from 'remark-details'
 // import rehypePseudo from './rehype-pseudocodejs'
-import rehypeMathjax from 'rehype-mathjax/chtml'
+import rehypeMathjax from 'rehype-mathjax/browser'
+// import rehypeDetails from 'rehype-details'
 
 const remarkPipe = unified()
   .use(remark)
@@ -87,13 +88,13 @@ const remarkPipe = unified()
 const rehypePipe = unified()
   .use(reparseRaw)
   // .use(rehypePseudo)
-  // .use(rehypeMathjax, { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/output/chtml/fonts/woff-v2' })
+  // .use(rehypeDetails)
+  .use(rehypeMathjax, { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/output/chtml/fonts/woff-v2' })
 
 export default function toHAST(md) {
     let markdownAST = remarkPipe.parse(md)
     markdownAST = remarkPipe.runSync(markdownAST)
 
-    
     return stripPosition(rehypePipe.runSync(tohast(markdownAST, {
         allowDangerousHTML: true,
         handlers: hastHandlers,
